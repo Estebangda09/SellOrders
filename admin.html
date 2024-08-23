@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Panel de Administración</h1>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="admin.html">Administrador</a>
+            <a href="pedidos.html">Pedidos</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div id="admin-panel">
+            <h2>Gestionar Categorías</h2>
+            <form id="add-category-form">
+                <input type="text" id="category-name" placeholder="Nombre de la categoría" required>
+                <button type="submit">Agregar Categoría</button>
+            </form>
+            <ul id="category-list"></ul>
+
+            <h2>Agregar Producto</h2>
+            <form id="add-product-form">
+                <select id="product-category" required></select>
+                <input type="text" id="product-name" placeholder="Nombre del producto" required>
+                <input type="number" id="product-price" placeholder="Precio" step="0.01" required>
+                <input type="text" id="product-image" placeholder="URL de la imagen" required>
+                <input type="text" id="product-ingredients" placeholder="Ingredientes (separados por comas)" required>
+                <button type="submit">Agregar Producto</button>
+            </form>
+
+            <h2>Gestionar Productos</h2>
+            <div id="product-list"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
