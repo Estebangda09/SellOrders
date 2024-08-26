@@ -269,7 +269,7 @@ function printOrder(order) {
         </html>
     `);
     printWindow.document.close();
-    printWindow.print();
+    //printWindow.print();
 }
 //función para renderizar la lista de pedidos
 function renderOrders() {
