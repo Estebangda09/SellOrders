@@ -511,6 +511,7 @@ function checkPermission(permission) {
     if (!currentUser) return false;
     return currentUser.permissions[permission];
 }
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
@@ -591,9 +592,4 @@ if (addUserForm) {
 
 
 
-// Función para verificar permisos (usar en las páginas correspondientes)
-function checkPermission(permission) {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) return false;
-    return currentUser.permissions[permission];
-}
+
