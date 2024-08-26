@@ -1,31 +1,94 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>App de Pedidos</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>App de Pedidos</h1>
-    <div class="header-image">
-        <img src="3325969.jpg" alt="Imagen de fondo">
-      </div>
-    <nav>
-      <a href="index.html">Inicio</a>
-      <a href="admin.html">Administrador</a>
-    </nav>
-  </header>
-  <div class="container">
-    <div id="menu"></div>
-    <div id="cart">
-      <h2>Carrito</h2>
-      <ul id="cart-items"></ul>
-      <p>Total: $<span id="cart-total">0</span></p>
-      <button onclick="placeOrder()">Realizar Pedido</button>
+    <header>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="admin.html">Administrador</a>
+            <a href="pedidos.html">Pedidos</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div id="admin-panel">
+            <h2>Gestionar Categorías</h2>
+            <form id="add-category-form">
+                <input type="text" id="category-name" placeholder="Nombre de la categoría" required>
+                <button type="submit">Agregar Categoría</button>
+            </form>
+            <ul id="category-list"></ul>
+
+            <h2>Agregar Producto</h2>
+            <form id="add-product-form">
+                <select id="product-category" required></select>
+                <input type="text" id="product-name" placeholder="Nombre del producto" required>
+                <input type="number" id="product-price" placeholder="Precio" step="0.01" required>
+                <input type="text" id="product-image" placeholder="URL de la imagen" required>
+                <input type="text" id="product-ingredients" placeholder="Ingredientes (separados por coma)" required>
+                <button type="submit">Agregar Producto</button>
+            </form>
+
+            <h2>Gestionar Productos</h2>
+            <div id="product-list"></div>
+
+            <h2>Gestionar Usuarios</h2>
+            <div id="user-management">
+                <h3>Agregar Usuario</h3>
+                <form id="add-user-form">
+                    <input type="text" id="username" placeholder="Nombre de usuario" required>
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                    <select id="user-role">
+                        <option value="admin">Administrador</option>
+                        <option value="editor">Editor</option>
+                        <option value="viewer">Visor</option>
+                    </select>
+                    <div>
+                        <label><input type="checkbox" id="can-edit-products"> Puede editar productos</label>
+                    </div>
+                    <div>
+                        <label><input type="checkbox" id="can-view-home"> Puede ver inicio</label>
+                    </div>
+                    <div>
+                        <label><input type="checkbox" id="can-view-orders"> Puede ver pedidos</label>
+                    </div>
+                    <button type="submit">Agregar Usuario</button>
+                </form>
+
+                <h3>Lista de Usuarios</h3>
+                <div id="user-list"></div>
+            </div>
+        </div>
     </div>
-  </div>
-  <script src="app.js"></script>
+
+    <script src="app.js"></script>
+    <script>
+        // Agregar usuario administrador predefinido
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('adminCreated')) {
+                const adminUser = {
+                    id: Date.now(),
+                    username: 'Admin',
+                    password: 'Esteban94*', // En una aplicación real, esto debería estar hasheado
+                    role: 'admin',
+                    permissions: {
+                        canEditProducts: true,
+                        canViewHome: true,
+                        canViewOrders: true
+                    }
+                };
+                let users = JSON.parse(localStorage.getItem('users') || '[]');
+                users.push(adminUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('adminCreated', 'true');
+                console.log('Usuario administrador creado.');
+            }
+        });
+    </script>
 </body>
 </html>
