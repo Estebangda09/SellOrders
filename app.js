@@ -1,4 +1,5 @@
 // app.js
+let users = [];
 let products = [];
 let cart = [];
 let categories = [];
@@ -13,12 +14,52 @@ function loadData() {
     if (savedCategories) categories = JSON.parse(savedCategories);
     if (savedOrders) orders = JSON.parse(savedOrders);
 }
+function loadUsers() {
+    const savedUsers = localStorage.getItem('users');
+    if (savedUsers) users = JSON.parse(savedUsers);
+}
 
 // Guardar datos en localStorage
 function saveData() {
     localStorage.setItem('products', JSON.stringify(products));
     localStorage.setItem('categories', JSON.stringify(categories));
     localStorage.setItem('orders', JSON.stringify(orders));
+    localStorage.setItem('users', JSON.stringify(users));
+}
+function addUser(username, password, role, permissions) {
+    const newUser = {
+        id: Date.now(),
+        username,
+        password, 
+        role,
+        permissions
+    };
+    users.push(newUser);
+    saveData();
+    renderUserList();
+}
+
+function deleteUser(userId) {
+    users = users.filter(user => user.id !== userId);
+    saveData();
+    renderUserList();
+}
+
+function renderUserList() {
+    const userListElement = document.getElementById('user-list');
+    if (userListElement) {
+        userListElement.innerHTML = '';
+        users.forEach(user => {
+            const userElement = document.createElement('div');
+            userElement.className = 'user-item';
+            userElement.innerHTML = `
+                <p><strong>${user.username}</strong> (${user.role})</p>
+                <p>Permisos: ${Object.entries(user.permissions).filter(([, value]) => value).map(([key]) => key).join(', ')}</p>
+                <button onclick="deleteUser(${user.id})">Eliminar</button>
+            `;
+            userListElement.appendChild(userElement);
+        });
+    }
 }
 
 function addProduct(newProduct) {
@@ -456,32 +497,6 @@ function updateProduct(productId) {
     alert('Producto actualizado con éxito!');
 }
 
-/*
-function updateProduct(productId) {
-    const productElement = document.getElementById(`product-${productId}`);
-
-    const newCategory = document.getElementById(`edit-category-${productId}`).value;
-    const newName = document.getElementById(`edit-name-${productId}`).value;
-    const newPrice = parseFloat(document.getElementById(`edit-price-${productId}`).value);
-    const newImage = document.getElementById(`edit-image-${productId}`).value;
-    const newIngredients = document.getElementById(`edit-ingredients-${productId}`).value
-        .split(',')
-        .map(ing => ({ name: ing.trim(), included: true }));
-
-    const product = products.find(p => p.id === productId);
-    product.category = newCategory;
-    product.name = newName;
-    product.price = newPrice;
-    product.image = newImage;
-    product.ingredients = newIngredients;
-
-    productElement.querySelector('h4').textContent = newName;
-    productElement.querySelector('p').textContent = `Precio: $${product.price.toFixed(2)}`;
-
-    document.getElementById(`edit-form-${productId}`).classList.remove('active');
-    saveData();
-}
-*/
 function deleteProduct(productId) {
     if (confirm('¿Está seguro de que desea eliminar este producto?')) {
         products = products.filter(product => product.id !== productId);
@@ -490,7 +505,12 @@ function deleteProduct(productId) {
         alert('Producto eliminado con éxito!');
     }
 }
-
+// Función para verificar permisos (usar en las páginas correspondientes)
+function checkPermission(permission) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return false;
+    return currentUser.permissions[permission];
+}
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
@@ -544,4 +564,36 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         dailyOrderCount = parseInt(localStorage.getItem('dailyOrderCount') || '0');
     }
+
+    //Nuevo
+
+    loadUsers();
+renderUserList();
+
+const addUserForm = document.getElementById('add-user-form');
+if (addUserForm) {
+    addUserForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const role = document.getElementById('user-role').value;
+        const permissions = {
+            canEditProducts: document.getElementById('can-edit-products').checked,
+            canViewHome: document.getElementById('can-view-home').checked,
+            canViewOrders: document.getElementById('can-view-orders').checked
+        };
+        addUser(username, password, role, permissions);
+        this.reset();
+        alert('Usuario agregado con éxito!');
+    });
+}
 });
+
+
+
+// Función para verificar permisos (usar en las páginas correspondientes)
+function checkPermission(permission) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return false;
+    return currentUser.permissions[permission];
+}
